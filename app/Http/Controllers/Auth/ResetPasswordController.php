@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\PasswordReset;
@@ -39,17 +40,16 @@ class ResetPasswordController extends Controller
     protected function resetPassword($user, $password)
     {
         $this->setUserPassword($user, $password);
-
         $user->setRememberToken(Str::random(60));
 
-
-        $user->esta_logeado = true;
-        session()->flash('message', ['success' => 'La contraseña se ha reseteado correctamente']);
+        // $user->esta_logeado = true;
+        session()->flash('message', ['success', 'La contraseña se ha reseteado correctamente']);
         
         $user->save();
-
         event(new PasswordReset($user));
+        
+        // $this->guard()->login($user);
 
-        $this->guard()->login($user);
+        return redirect('login');
     }
 }
